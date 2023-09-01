@@ -1,6 +1,8 @@
 export type Alias = {
+  /** Name, full command, main command, type and description. */
   name: string;
   command: string;
+  main: string;
   type: AliasType;
   description: string;
 };
