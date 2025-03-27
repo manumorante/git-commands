@@ -11,7 +11,7 @@ export type Alias = {
    * - default: Can edit, move or delete.
    * - delete: Related to information deletion.
    */
-  type: AliasType;
+  type: "show" | "default" | "delete";
 
   /** The main command. E.g. `git` for `git commit`. */
   main?: string;
@@ -25,5 +25,3 @@ export type Alias = {
   /** Whether the alias is recent. */
   recent?: boolean;
 };
-
-export type AliasType = "show" | "default" | "delete";

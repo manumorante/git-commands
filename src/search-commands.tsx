@@ -1,16 +1,18 @@
 import { List } from "@raycast/api";
 import { Alias } from "./types";
-import AliasItem from "./components/alias-item";
-import { AppProvider, useApp } from "./lib/context";
-import { maxPins, maxRecent } from "./lib/preferences";
+import AliasItem from "./alias-item";
+import { AppProvider, useApp } from "./context";
+import { getPreferenceValues } from "@raycast/api";
+
+const preferences = getPreferenceValues();
 
 function AliasList() {
-  const { showDetails, isLoading, aliases, pins, recent } = useApp();
+  const { showDetails, aliases, pins, recent } = useApp();
 
   return (
-    <List isLoading={isLoading} isShowingDetail={showDetails}>
+    <List isShowingDetail={showDetails}>
       <List.Section title="Pinned" subtitle={`${pins.length}`}>
-        {pins.slice(0, maxPins).map((alias: Alias) => (
+        {pins.slice(0, preferences.maxPins).map((alias: Alias) => (
           <AliasItem key={alias.name} alias={alias} />
         ))}
       </List.Section>
@@ -18,7 +20,7 @@ function AliasList() {
       <List.Section title="Recent" subtitle={`${recent.length}`}>
         {recent
           .reverse()
-          .slice(0, maxRecent)
+          .slice(0, preferences.maxRecent)
           .map((alias: Alias) => (
             <AliasItem key={alias.name} alias={alias} />
           ))}
