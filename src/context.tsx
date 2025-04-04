@@ -1,7 +1,8 @@
 import { createContext, useContext } from "react";
 import { useCachedState } from "@raycast/utils";
-import DATA from "./aliases.json";
 import { Alias } from "./types";
+import DATA from "./aliases.json";
+import * as actions from "./actions";
 
 interface AppContextType {
   aliases: Alias[];
@@ -19,30 +20,25 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const initialValue = DATA.aliases as Alias[];
-  const [aliases, setAliases] = useCachedState<Alias[]>("aliases", initialValue);
+  const [aliases, setAliases] = useCachedState<Alias[]>("aliases", DATA.aliases as Alias[]);
   const [showDetails, setShowDetails] = useCachedState<boolean>("showDetails", true);
 
-  const setProperty = (name: string, prop: keyof Alias, value: Alias[keyof Alias]) => {
-    setAliases(aliases.map((a: Alias) => (a.name === name ? { ...a, [prop]: value } : a)));
-  };
-
-  const pinAlias = (name: string) => setProperty(name, "pin", true);
-  const unpinAlias = (name: string) => setProperty(name, "pin", false);
-  const addRecent = (name: string) => setProperty(name, "recent", true);
-  const removeRecent = (name: string) => setProperty(name, "recent", false);
-  const clearAllRecent = () => setAliases(aliases.map((a: Alias) => ({ ...a, recent: false })));
+  const pinAlias = (name: string) => actions.pinAlias(aliases, name).then(setAliases);
+  const unpinAlias = (name: string) => actions.unpinAlias(aliases, name).then(setAliases);
+  const addRecent = (name: string) => actions.addRecent(aliases, name).then(setAliases);
+  const removeRecent = (name: string) => actions.removeRecent(aliases, name).then(setAliases);
+  const clearAllRecent = () => actions.clearAllRecent(aliases).then(setAliases);
   const toggleDetails = () => setShowDetails(!showDetails);
 
-  const pins = aliases.filter((alias: Alias) => alias.pin);
-  const recent = aliases.filter((alias: Alias) => alias.recent && !alias.pin);
+  const pins = aliases.filter((alias) => alias.pin);
+  const recent = aliases.filter((alias) => alias.recent && !alias.pin);
 
   const value = {
-    showDetails,
-    toggleDetails,
     aliases,
+    showDetails,
     pins,
     recent,
+    toggleDetails,
     addRecent,
     clearAllRecent,
     pinAlias,

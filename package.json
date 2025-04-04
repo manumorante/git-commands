@@ -19,6 +19,72 @@
       "mode": "view"
     }
   ],
+  "tools": [
+    {
+      "name": "add-to-pinned",
+      "title": "Add to pinned",
+      "description": "Add one or more aliases to your pinned aliases"
+    }
+  ],
+  "ai": {
+    "instructions": "You are a helpful assistant that can help me learn Git commands and Oh My Zsh alias.",
+    "evals": [
+      {
+        "input": "@git-commands Add gss to pinned",
+        "mocks": {
+          "add-to-pinned": {
+            "aliases": [
+              "gss"
+            ]
+          }
+        },
+        "expected": [
+          {
+            "callsTool": {
+              "name": "add-to-pinned",
+              "arguments": {
+                "aliases": [
+                  "gss"
+                ]
+              }
+            }
+          },
+          {
+            "includes": "added to pinned"
+          }
+        ]
+      },
+      {
+        "input": "@git-commands Pin these aliases: gss, gp, gl",
+        "mocks": {
+          "add-to-pinned": {
+            "aliases": [
+              "gss",
+              "gp",
+              "gl"
+            ]
+          }
+        },
+        "expected": [
+          {
+            "callsTool": {
+              "name": "add-to-pinned",
+              "arguments": {
+                "aliases": [
+                  "gss",
+                  "gp",
+                  "gl"
+                ]
+              }
+            }
+          },
+          {
+            "includes": "added to pinned"
+          }
+        ]
+      }
+    ]
+  },
   "preferences": [
     {
       "name": "IconPinColored",
